@@ -1,0 +1,19 @@
+{
+  "name": "@tpkg/jquery-rotate-captcha",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/TopkeeMedia/jquery-rotate-captcha-js.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/TopkeeMedia/jquery-rotate-captcha-js/issues"
+  },
+  "homepage": "https://github.com/TopkeeMedia/jquery-rotate-captcha-js#readme"
+}
