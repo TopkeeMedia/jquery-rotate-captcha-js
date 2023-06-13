@@ -291,7 +291,7 @@
         close: function (state) {}, // 关闭验证码窗口
     };
 
-	class Captcha {
+    class Captcha {
         constructor(element, options) {
             const _this = this;
             _this.runtime = {
@@ -322,8 +322,7 @@
 
         render() {
             const _this = this;
-
-            _this.element.html(_this.captchaHTML(_this.options));
+            _this.element.append(_this.captchaHTML(_this.options));
             _this.$elem = _this.element.find('.captcha-root');
 
             _this.options.init(_this);
@@ -337,7 +336,7 @@
             _this.$control = _this.$elem.find('.captcha-control');
             _this.$controlWrap = _this.$elem.find('.captcha-control-wrap');
             _this.$controlButton = _this.$elem.find('.captcha-control-button');
-            
+
             _this.loadImg(function() {
                 _this.events();
             });
@@ -347,20 +346,23 @@
             const _this = this;
 
             callback = callback || function() {};
-            
+
             _this.runtime.loaded = !1;
             _this.$captchaImgWrap.addClass('captcha-loading');
-            
-            $.getJSON(_this.options.url.create).done(function(res, textStatus, jqXHR) {
+            $.getJSON(_this.options.url.create).done(function (res, textStatus, jqXHR) {
                 if(res.code === 0) {
                     // 使用JQ版本请后端务必传递token参数给前端用于验证
                     _this.token = res.data.token || '';
-                    _this.$captchaImg = _this.$captchaImgWrap.find('img').attr('src', _this.options.url.img + '?token=' + res.data.token).css({transform: 'rotate(0deg)'});
-
-                    _this.$captchaImg.onload = function () {
+                    _this.runtime.str = res.data.str || '';
+                    const src = _this.options.url.img + '?token=' + _this.token
+                    _this.$captchaImg = _this.$captchaImgWrap.find('img').attr('src', src).css({ transform: 'rotate(0deg)' });
+                    
+                    console.log('src---', src)
+                    _this.$captchaImg.on('load', () => { 
+                        console.log('img loaded')
                         _this.runtime.loaded = !0;
                         _this.$captchaImgWrap.removeClass('captcha-loading');
-                    };
+                    })
 
                     if(typeof callback == 'function') {
                         callback();
@@ -368,7 +370,7 @@
                 }
             });
         }
-        
+
         events(elem) {
             const _this = this;
             if(isTouch) {
@@ -379,75 +381,75 @@
         }
 
         spinImg() {
-			const _this = this;
+            const _this = this;
 
             if(this.runtime.deg) {
                 _this.$coordinate.show();
             } else {
                 _this.$coordinate.hide();
             }
-            
+
             _this.$captchaImg.css({transform: 'rotate('+ this.runtime.deg +'deg)'});
         }
 
         initMouse() {
-			const _this = this;
-			let ifThisMousedown = !1;
-            
-			_this.$controlButton.on('mousedown.' + libName, function (e) {
+            const _this = this;
+            let ifThisMousedown = !1;
+
+            _this.$controlButton.on('mousedown.' + libName, function (e) {
                 if (!_this.runtime.loaded || _this.runtime.state || _this.dragTimerState || _this.$controlButton.is(':animated')) {
-					return !1;
+                    return !1;
                 }
                 console.log('mouse');
 
-				ifThisMousedown = !0;
-				let disPageX = e.pageX;
-				_this.$controlButton.addClass('captcha-button-active');
+                ifThisMousedown = !0;
+                let disPageX = e.pageX;
+                _this.$controlButton.addClass('captcha-button-active');
 
-				$(document).on('mousemove.' + libName, function (e) {
+                $(document).on('mousemove.' + libName, function (e) {
 
-					if (!ifThisMousedown) {
-						return !1;
-					}
+                    if (!ifThisMousedown) {
+                        return !1;
+                    }
 
-					let x = e.pageX - disPageX;
+                    let x = e.pageX - disPageX;
 
-                    
+
                     _this.move(x);
-					e.preventDefault();
-				});
-			});
+                    e.preventDefault();
+                });
+            });
 
-			$(document).on('mouseup.' + libName, function () {
-				if (!ifThisMousedown) {
-					return false;
-				}
+            $(document).on('mouseup.' + libName, function () {
+                if (!ifThisMousedown) {
+                    return false;
+                }
 
-				ifThisMousedown = !1;
+                ifThisMousedown = !1;
 
-				if (_this.runtime.state) {
-					return !1;
-				}
+                if (_this.runtime.state) {
+                    return !1;
+                }
 
-				$(document).off('mousemove.' + libName);
+                $(document).off('mousemove.' + libName);
                 _this.$controlButton.css({transform: 'translateX(0px)'}).removeClass('captcha-button-active');
 
                 if(!_this.runtime.deg || _this.runtime.left < 5) {
                     _this.$coordinate.hide();
                     _this.$captchaImg.css({transform: 'rotate(0deg)'});
                     _this.$controlButton.css({transform: 'translateX(0px)'});
-					return !1;
+                    return !1;
                 }
 
                 // 验证
                 _this.check();
-			});
+            });
         }
 
         initTouch() {
-			const _this = this;
+            const _this = this;
 
-			let ifThisTouchStart = !1;
+            let ifThisTouchStart = !1;
 
             let disPageX = 0;
 
@@ -456,11 +458,11 @@
                     if (!_this.runtime.loaded || _this.runtime.state || _this.dragTimerState || _this.$controlButton.is(':animated')) {
                         return !1;
                     }
-                    
-				    ifThisTouchStart = !0;
+
+                    ifThisTouchStart = !0;
                     disPageX = e.originalEvent.targetTouches[0].pageX;
 
-				    _this.$controlButton.addClass('captcha-button-active');
+                    _this.$controlButton.addClass('captcha-button-active');
                 },
                 'touchmove.captcha': function (e) {
                     e.preventDefault();
@@ -468,7 +470,7 @@
                         return !1;
                     }
 
-					let x = e.originalEvent.targetTouches[0].pageX - disPageX;
+                    let x = e.originalEvent.targetTouches[0].pageX - disPageX;
 
                     _this.move(x);
                 },
@@ -487,7 +489,7 @@
                     if (_this.$controlButton.is(':animated')) {
                         return !1;
                     }
-    
+
                     _this.$controlButton.removeClass('captcha-button-active');
 
                     if(!_this.runtime.deg || _this.runtime.left < 5) {
@@ -496,7 +498,7 @@
                         _this.$controlButton.css({transform: 'translateX(0px)'});
                         return !1;
                     }
-    
+
                     // 验证
                     _this.check();
                 }
@@ -511,8 +513,8 @@
                     'X-Captchatoken' : this.token,
                 }
             });
-            $.getJSON(_this.options.url.check, {angle: _this.runtime.deg}).done(function(res) { // , token: this.token
-                if(res.code === 0) {
+            $.getJSON(_this.options.url.check, { str: _this.runtime.str, angle: _this.runtime.deg }).done(function (res) { // , token: this.token
+                if(res && res.result) {
                     _this.runtime.state = !0;
                     _this.$coordinate.hide();
                     _this.$main.addClass('captcha-success');
@@ -579,13 +581,13 @@
                     _this.$controlButton.css({transform: 'translateX(210px)'}).removeClass('captcha-button-active');
                 }
             }
-            
+
             _this.runtime.left = x;
             _this.spinImg();
         }
 
         timerProgressBar (timer) {
-			const _this = this;
+            const _this = this;
 
             if(!timer) {
                 return !1;
@@ -602,14 +604,14 @@
                 _this.options.close(_this.runtime.state);
             }, timer + 10);
 
-            let timerProgressBar = _this.$elem.querySelectorAll('.captcha-timer-progress-bar')[0] || null;
-
+            let timerProgressBar = _this.$elem[0].querySelectorAll('.captcha-timer-progress-bar')[0] || null;
+       
             if(!timerProgressBar) {
                 return !1;
             }
 
             timerProgressBar.style.display = 'flex';
-            
+
             setTimeout(() => {
                 timerProgressBar.style.transition = `width ${timer / 1000}s linear`;
                 timerProgressBar.style.width = '0%';
@@ -629,7 +631,7 @@
             };
             this.$coordinate.hide();
             this.loadImg(this.$elem);
-		}
+        }
 
         destroy() {
             this.options.close(this.runtime.state);
@@ -644,7 +646,7 @@
         close() {
             this.destroy();
         }
-        
+
         insertCss(css) {
             if(!document.querySelectorAll('#J_captcha_css').length) {
                 $('head').prepend('<style id="J_captcha_css" type="text/css">'+ css +'</style>');
