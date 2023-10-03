@@ -93,7 +93,7 @@
                 if (res.code === 0) {
                     // let token = xhr.getResponseHeader('X-Captchatoken');
                     // _this.token = token || res.data.token | '';
-                    _this.token = res.data.token || ''
+                    _this.token = res.data.token || '';
                     _this.runtime.str = res.data.str || "";
 
                     _this.$captchaImg = _this.$captchaImgWrap.querySelectorAll('img')[0];
