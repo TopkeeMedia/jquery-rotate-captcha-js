@@ -94,6 +94,7 @@
                     // let token = xhr.getResponseHeader('X-Captchatoken');
                     // _this.token = token || res.data.token | '';
                     _this.token = res.data.token || ''
+                    _this.runtime.str = res.data.str || "";
 
                     _this.$captchaImg = _this.$captchaImgWrap.querySelectorAll('img')[0];
                     _this.$captchaImg.setAttribute('src', _this.options.url.img + '?token=' + _this.token);
@@ -246,8 +247,9 @@
         check() {
             const _this = this;
 
-            _this.getJSON(_this.options.url.check, {angle: _this.runtime.deg}, function(res) {
-                if(res.code === 0) {
+            _this.getJSON(_this.options.url.check, { str: _this.runtime.str, angle: _this.runtime.deg }, function (res) {
+                //res.code === 0
+                if(res && res.result) {
                     _this.runtime.state = !0;
                     _this.$coordinate.style.display = 'none';
                     _this.$main.classList.add('captcha-success');
