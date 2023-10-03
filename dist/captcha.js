@@ -93,10 +93,10 @@
                 if (res.code === 0) {
                     // let token = xhr.getResponseHeader('X-Captchatoken');
                     // _this.token = token || res.data.token | '';
-                    _this.token = res.data.token | ''
+                    _this.token = res.data.token || ''
 
                     _this.$captchaImg = _this.$captchaImgWrap.querySelectorAll('img')[0];
-                    _this.$captchaImg.setAttribute('src', _this.options.url.img + '?id=' + res.data.str);
+                    _this.$captchaImg.setAttribute('src', _this.options.url.img + '?token=' + _this.token);
                     _this.$captchaImg.style.cssText = 'transform: rotate(0deg);';
 
                     _this.$captchaImg.onload = function () {
