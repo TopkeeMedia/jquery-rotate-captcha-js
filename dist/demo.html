@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <title>Swiper demo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1">
+  <script src="captcha.js"></script>
+</head>
+<body>
+    <button>click</button>
+    <div class="J__captcha__"></div>
+
+    <script>
+        console.log( document.querySelector('.J__captcha__'))
+     document.querySelector('.J__captcha__')?.captcha({
+        // 验证成功时显示
+        timerProgressBar: !0, // 是否启用进度条
+        timerProgressBarColor: "#07f", // 进度条颜色
+        title: null,
+        url: {
+          create:
+            "https://weber-api-service-weber-api-service.apps.v6fj.hk.topkee.top/weber-api/layout/captcha/rotate", // 获取验证码信息
+          check:
+            "https://weber-api-service-weber-api-service.apps.v6fj.hk.topkee.top/weber-api/layout/captcha/verify", // 验证
+          img: "https://desktop.webersite.top/weber-api/layout/captcha/image", // 交换旋转图
+        },
+        // 初始化回调
+        init: function (captcha) {},
+        // 验证成回调
+        success: function () {},
+        // 验证失败回调
+        fail: function () {},
+        // 触发验证回调, 不管成功与否
+        complete: function (state) {},
+        // 验证码触发关闭(验证成功后需要关闭)
+        close: function (state) {
+          //关闭modal
+          div.remove();
+          // console.log("Captcha close， state：", state);
+          callback(state);
+        },
+      });
+    </script>
+</body>
+</html>
